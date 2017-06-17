@@ -19,6 +19,8 @@ using namespace std;
 #define CMD_QUIT    "quit"
 #define CMD_SQUIT   "q"
 
+#define QUIT_TAG 0
+
 static unsigned int np;
 
 // Crea un ConcurrentHashMap distribuido
@@ -33,7 +35,10 @@ static void load(list<string> params) {
 
 // Esta función debe avisar a todos los nodos que deben terminar
 static void quit() {
-    // TODO: Implementar
+    MPI_Request req;
+    for (unsigned int i = 1; i < np; ++i){
+        MPI_Isend(NULL, 0, MPI_CHAR, i, QUIT_TAG, MPI_COMM_WORLD, &req);
+    }
 }
 
 // Esta función calcula el máximo con todos los nodos
