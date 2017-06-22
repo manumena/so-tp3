@@ -28,6 +28,7 @@ void nodo(unsigned int rank) {
     		MPI_Get_count(&status, MPI_CHAR, &filenameSize);
     		printf("Mi rank es %d, Tamaño del nombre: %d\n", rank, filenameSize);
 
+    		MPI_Request req;
     		char filename[filenameSize];
     		MPI_Recv(filename, filenameSize, MPI_CHAR, ROOT, LOAD_REQ_TAG, MPI_COMM_WORLD, &status);
     		printf("Mi rank es %d, recibi el archivo: %s\n", rank, filename);
