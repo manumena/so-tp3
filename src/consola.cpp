@@ -27,18 +27,28 @@ static void load(list<string> params) {
     MPI_Request req;
 
     for (list<string>::iterator it=params.begin(); it != params.end(); ++it) {
-       // TODO: Implementar
         string filename = *it;
-        // char f[filename.size()] = *it;
+
         // mandar mensaje a todos
         for (unsigned int i = 0; i < np; i++) {
             MPI_Isend(filename.c_str(), filename.size(), MPI_CHAR, i, LOAD_REQ_TAG, MPI_COMM_WORLD, &req);
         }
+
         // esperar a que uno me indique que lo lee
         MPI_Status status;
         MPI_Recv(NULL, 0, MPI_CHAR, MPI_ANY_SOURCE, LOAD_ACCEPT_TAG, MPI_COMM_WORLD, &status);
-        printf("Respondio el nodo %d\n", status.MPI_SOURCE);
-        // avisarle a ese que lo lea
+        unsigned int reader = status.MPI_SOURCE;
+        printf("Respondio el nodo %d\n", reader);
+
+        // avisarle a ese que lo lea y al resto que no
+        int accepted = ACCEPTED;
+        int rejected = REJECTED;
+        for (unsigned int i = 0; i < np; i++) {
+            if (i == reader)
+                MPI_Isend(&accepted, 1, MPI_INT, i, LOAD_ORDER_TAG, MPI_COMM_WORLD, &req);
+            else
+                MPI_Isend(&rejected, 1, MPI_INT, i, LOAD_ORDER_TAG, MPI_COMM_WORLD, &req);
+        }
     }
 
     cout << "La listá esta procesada" << endl;

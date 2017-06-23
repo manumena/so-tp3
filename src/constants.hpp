@@ -6,4 +6,9 @@
 #define QUIT_TAG 		0
 #define LOAD_REQ_TAG 	1
 #define LOAD_ACCEPT_TAG	2
+#define LOAD_ORDER_TAG	3
+
+#define REJECTED	0
+#define ACCEPTED 	1
+
 #endif  /* _CONSTANTS_H */
