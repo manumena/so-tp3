@@ -29,16 +29,20 @@ static void load(list<string> params) {
     for (list<string>::iterator it=params.begin(); it != params.end(); ++it) {
         string filename = *it;
 
+        // Transformar el string en char* para enviar
+        char *filenamePointer = (char *) malloc(filename.size() + 1);
+        strcpy(filenamePointer, filename.c_str());
+
         // Mandar mensaje a todos
         for (unsigned int i = 0; i < np; i++) {
-            MPI_Isend(filename.c_str(), filename.size(), MPI_CHAR, i, LOAD_REQ_TAG, MPI_COMM_WORLD, &req);
+            MPI_Isend(filenamePointer, filename.size() + 1, MPI_CHAR, i, LOAD_REQ_TAG, MPI_COMM_WORLD, &req);
         }
 
         // Esperar a que uno me indique que lo lee
         MPI_Status status;
         MPI_Recv(NULL, 0, MPI_CHAR, MPI_ANY_SOURCE, LOAD_ACCEPT_TAG, MPI_COMM_WORLD, &status);
         unsigned int reader = status.MPI_SOURCE;
-        printf("Respondio el nodo %d\n", reader);
+        // printf("Respondio el nodo %d\n", reader);
 
         // Avisarle a ese que lo lea y al resto que no
         int accepted = ACCEPTED;
@@ -49,6 +53,8 @@ static void load(list<string> params) {
             else
                 MPI_Isend(&rejected, 1, MPI_INT, i, LOAD_ORDER_TAG, MPI_COMM_WORLD, &req);
         }
+
+        free(filenamePointer);
     }
 
     cout << "La listá esta procesada" << endl;
@@ -76,8 +82,18 @@ static void maximum() {
 // Esta función busca la existencia de *key* en algún nodo
 static void member(string key) {
     bool esta = false;
+    MPI_Request req;
 
-    // TODO: Implementar
+    // Transformar el string en char* para enviar
+    char *keyPointer = (char *) malloc(key.size() + 1);
+    strcpy(keyPointer, key.c_str());
+
+    // Mandar mensaje a todos
+    for (unsigned int i = 0; i < np; i++) {
+        MPI_Isend(keyPointer, key.size() + 1, MPI_CHAR, i, MEMBER_TAG, MPI_COMM_WORLD, &req);
+    }
+
+    free(keyPointer);
 
     cout << "El string <" << key << (esta ? ">" : "> no") << " está" << endl;
 }

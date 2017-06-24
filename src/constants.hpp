@@ -7,6 +7,7 @@
 #define LOAD_REQ_TAG 	1
 #define LOAD_ACCEPT_TAG	2
 #define LOAD_ORDER_TAG	3
+#define MEMBER_TAG		4
 
 #define REJECTED	0
 #define ACCEPTED 	1
