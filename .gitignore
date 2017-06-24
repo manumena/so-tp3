@@ -3,6 +3,7 @@
 *.lo
 *.obj
 *.o
+dist_hashmap
 
 # Precompiled Headers
 *.gch
