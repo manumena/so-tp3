@@ -8,10 +8,8 @@
 using namespace std;
 
 void nodo(unsigned int rank) {
-    // printf("Soy un nodo. Mi rank es %d \n", rank);
-
-    // TODO: Implementar
     // Crear un HashMap local
+    HashMap hashmap;
     MPI_Status status;
 
     while (true) {
@@ -19,19 +17,19 @@ void nodo(unsigned int rank) {
 
     	if (status.MPI_TAG == QUIT_TAG) {
 	    	MPI_Recv(NULL, 0, MPI_CHAR, ROOT, QUIT_TAG, MPI_COMM_WORLD, &status);
-	    	printf("[%d] Me muero, el tag es %d\n", rank, status.MPI_TAG);
 	    	break;
     	}
 
     	if (status.MPI_TAG == LOAD_REQ_TAG) {
     		int filenameSize;
     		MPI_Get_count(&status, MPI_CHAR, &filenameSize);
+    		// ESTE ES EL PRINT QUE SALVA EL BUG excepto para nombres de archivo de tamaño menor a 5
     		printf("[%d] Tamaño del nombre: %d\n", rank, filenameSize);
 
     		MPI_Request req;
     		char filename[filenameSize];
     		MPI_Recv(filename, filenameSize, MPI_CHAR, ROOT, LOAD_REQ_TAG, MPI_COMM_WORLD, &status);
-    		printf("[%d] Recibi el archivo: %s\n", rank, filename);
+    		// printf("[%d] Recibi el archivo: %s\n", rank, filename);
 
     		// Enviar mensaje de aceptacion de carga
     		MPI_Isend("", 0, MPI_CHAR, ROOT, LOAD_ACCEPT_TAG, MPI_COMM_WORLD, &req);
@@ -42,7 +40,8 @@ void nodo(unsigned int rank) {
 
     		if (order == ACCEPTED) {
     			// Cargar el archivo en el hashmap local
-    			printf("[%d] Cargo %s\n", rank, filename);
+    			string fname(filename);
+    			hashmap.load(fname);
     		} else
     			printf("[%d] No lo cargo\n", rank);
     	}
