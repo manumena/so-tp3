@@ -20,7 +20,9 @@ using namespace std;
 #define CMD_QUIT    "quit"
 #define CMD_SQUIT   "q"
 
+
 static unsigned int np;
+
 
 // Crea un ConcurrentHashMap distribuido
 static void load(list<string> params) {
@@ -56,6 +58,7 @@ static void load(list<string> params) {
         free(filenamePointer);
     }
 
+
     cout << "La listá esta procesada" << endl;
 }
 
@@ -69,11 +72,43 @@ static void quit() {
 
 // Esta función calcula el máximo con todos los nodos
 static void maximum() {
-    pair<string, unsigned int> result;
 
-    // TODO: Implementar
-    string str("a");
-    result = make_pair(str,10);
+    HashMap *mapa = new HashMap();
+
+    //enviarmensaje a todos
+    char *msg = "START";
+    for (unsigned int i = 0; i < np; ++i){
+        MPI_Send( msg, sizeof(msg), MPI_CHAR, i, MAXIMUM_MSG_START_TAG, MPI_COMM_WORLD);
+    }
+
+    unsigned int HASHMAP_VACIOS = 0;
+    while(HASHMAP_VACIOS < np){
+
+        //hay alguna palabras
+        MPI_Status status;
+        MPI_Probe(MPI_ANY_SOURCE, MAXIMUM_WORD_TAG , MPI_COMM_WORLD, &status);
+
+
+        //tamaño de la palabra
+        int wordSize;
+        MPI_Get_count(&status, MPI_CHAR, &wordSize);
+
+        //obtengo palabra
+        MPI_Status stat;
+
+        char *wordPointer = (char *) malloc(wordSize);
+        MPI_Recv( wordPointer, wordSize, MPI_CHAR, status.MPI_SOURCE, MAXIMUM_WORD_TAG, MPI_COMM_WORLD, &stat);
+
+        if(wordSize == 0){
+            HASHMAP_VACIOS++;
+        }else{
+            mapa->addAndInc(wordPointer);
+        }
+
+        free(wordPointer);
+    }
+
+    pair<string, unsigned int> result = mapa->maximum();
 
     cout << "El máximo es <" << result.first <<"," << result.second << ">" << endl;
 }
