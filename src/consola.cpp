@@ -34,7 +34,7 @@ static void load(list<string> params) {
         strcpy(filenamePointer, filename.c_str());
 
         // Mandar mensaje a todos
-        for (unsigned int i = 0; i < np; i++) {
+        for (unsigned int i = 1; i < np; i++) {
             MPI_Isend(filenamePointer, filename.size() + 1, MPI_CHAR, i, LOAD_REQ_TAG, MPI_COMM_WORLD, &req);
         }
 
@@ -42,12 +42,11 @@ static void load(list<string> params) {
         MPI_Status status;
         MPI_Recv(NULL, 0, MPI_CHAR, MPI_ANY_SOURCE, LOAD_ACCEPT_TAG, MPI_COMM_WORLD, &status);
         unsigned int reader = status.MPI_SOURCE;
-        // printf("Respondio el nodo %d\n", reader);
 
         // Avisarle a ese que lo lea y al resto que no
         int accepted = ACCEPTED;
         int rejected = REJECTED;
-        for (unsigned int i = 0; i < np; i++) {
+        for (unsigned int i = 1; i < np; i++) {
             if (i == reader)
                 MPI_Isend(&accepted, 1, MPI_INT, i, LOAD_ORDER_TAG, MPI_COMM_WORLD, &req);
             else
@@ -89,8 +88,16 @@ static void member(string key) {
     strcpy(keyPointer, key.c_str());
 
     // Mandar mensaje a todos
-    for (unsigned int i = 0; i < np; i++) {
-        MPI_Isend(keyPointer, key.size() + 1, MPI_CHAR, i, MEMBER_TAG, MPI_COMM_WORLD, &req);
+    for (unsigned int i = 0; i < np; i++)
+        MPI_Isend(keyPointer, key.size() + 1, MPI_CHAR, i, MEMBER_REQ_TAG, MPI_COMM_WORLD, &req);
+
+    // Recibir las respuestas
+    MPI_Status status;
+    int response;
+    for (unsigned int i = 1; i < np; i++) {
+        MPI_Recv(&response, 1, MPI_INT, MPI_ANY_SOURCE, MEMBER_RES_TAG, MPI_COMM_WORLD, &status);
+        if (response)
+            esta = true;
     }
 
     free(keyPointer);

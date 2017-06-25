@@ -24,13 +24,11 @@ void nodo(unsigned int rank) {
     	if (status.MPI_TAG == LOAD_REQ_TAG) {
     		int filenameSize;
     		MPI_Get_count(&status, MPI_CHAR, &filenameSize);
-    		// ESTE ES EL PRINT QUE SALVA EL BUG excepto para nombres de archivo de tamaño menor a 5
-    		printf("[%d] Tamaño del nombre: %d\n", rank, filenameSize);
 
+    		// Recibir nombre de archivo
     		char *filename = (char *) malloc(filenameSize);
     		MPI_Recv(filename, filenameSize, MPI_CHAR, ROOT, LOAD_REQ_TAG, MPI_COMM_WORLD, &status);
 			string fname(filename);
-    		printf("[%d] Recibi el archivo: %s\n", rank, fname.c_str());
 
     		// Enviar mensaje de aceptacion de carga
     		MPI_Isend("", 0, MPI_CHAR, ROOT, LOAD_ACCEPT_TAG, MPI_COMM_WORLD, &req);
@@ -42,22 +40,22 @@ void nodo(unsigned int rank) {
     		if (order == ACCEPTED) {
     			// Cargar el archivo en el hashmap local
     			hashmap.load(fname);
-    			// hashmap.printAll();
     		}
 
     		free(filename);
     	}
 
-    	if (status.MPI_TAG == MEMBER_TAG) {
+    	if (status.MPI_TAG == MEMBER_REQ_TAG) {
     		int keySize;
     		MPI_Get_count(&status, MPI_CHAR, &keySize);
 
     		char *key = (char *) malloc(keySize);
 
-    		MPI_Recv(key, keySize, MPI_CHAR, ROOT, MEMBER_TAG, MPI_COMM_WORLD, &status);
-    		printf("[%d] Recibo la clave %s\n", rank, key);
+    		MPI_Recv(key, keySize, MPI_CHAR, ROOT, MEMBER_REQ_TAG, MPI_COMM_WORLD, &status);
 
-    		
+    		string strKey(key);
+    		int esta = hashmap.member(strKey);
+    		MPI_Isend(&esta, 1, MPI_INT, ROOT, MEMBER_RES_TAG, MPI_COMM_WORLD, &req);
 
     		free(key);
     	}
