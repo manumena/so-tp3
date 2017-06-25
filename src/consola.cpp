@@ -144,9 +144,35 @@ static void member(string key) {
 // Esta función suma uno a *key* en algún nodo
 static void addAndInc(string key) {
 
-    // TODO: Implementar
+    MPI_Request req;
 
-    cout << "Agregado: " << key << endl;
+    // Transformar el string en char* para enviar
+    char *keyPointer = (char *) malloc(key.size() + 1);
+    strcpy(keyPointer, key.c_str());
+
+    // Mandar mensaje a todos
+    for (unsigned int i = 0; i < np; i++) {
+        MPI_Isend(keyPointer, key.size() + 1, MPI_CHAR, i, ADD_AND_INC_REQ_TAG, MPI_COMM_WORLD, &req);
+    }
+
+    // Esperar a que uno me indique que lo agrego
+    MPI_Status status;
+    MPI_Recv(NULL, 0, MPI_CHAR, MPI_ANY_SOURCE, ADD_AND_INC_ACCEPT_TAG, MPI_COMM_WORLD, &status);
+    unsigned int adder = status.MPI_SOURCE;
+
+    // Avisarle a ese que lo lea y al resto que no
+    int accepted = ACCEPTED;
+    int rejected = REJECTED;
+    for (unsigned int i = 0; i < np; i++) {
+        if (i == adder)
+            MPI_Isend(&accepted, 1, MPI_INT, i, ADD_AND_INC_ORDER_TAG, MPI_COMM_WORLD, &req);
+        else
+            MPI_Isend(&rejected, 1, MPI_INT, i, ADD_AND_INC_ORDER_TAG, MPI_COMM_WORLD, &req);
+    }
+
+    free(keyPointer);
+
+    cout << "Agregado: " << key << " en el nodo " << adder << " ."<< endl;
 }
 
 

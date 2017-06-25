@@ -72,7 +72,7 @@ void nodo(unsigned int rank) {
     		free(key);
     	}
 
-        if(status.MPI_TAG == MAXIMUM_MSG_START_TAG){
+    if(status.MPI_TAG == MAXIMUM_MSG_START_TAG){
             int msgsize;
             MPI_Get_count(&status, MPI_CHAR, &msgsize);
 
@@ -103,6 +103,33 @@ void nodo(unsigned int rank) {
         }
     }
 
+    if (status.MPI_TAG == ADD_AND_INC_REQ_TAG) {
+      int keySize;
+      MPI_Get_count(&status, MPI_CHAR, &keySize);
+      // ESTE ES EL PRINT QUE SALVA EL BUG excepto para nombres de archivo de tamaño menor a 5
+      printf("[%d] Tamaño del nombre de la key: %d\n", rank, keySize);
+
+      char *key = (char *) malloc(keySize);
+      MPI_Recv(key, keySize, MPI_CHAR, ROOT, ADD_AND_INC_REQ_TAG, MPI_COMM_WORLD, &status);
+      string k(key);
+      printf("[%d] Recibi la key: %s\n", rank, k.c_str());
+
+      // Enviar mensaje de aceptacion de carga
+      MPI_Request req;
+      MPI_Isend("", 0, MPI_CHAR, ROOT, ADD_AND_INC_ACCEPT_TAG, MPI_COMM_WORLD, &req);
+
+      // Esperar a recibir la orden
+      int order;
+      MPI_Recv(&order, 1, MPI_INT, ROOT, LOAD_ORDER_TAG, MPI_COMM_WORLD, &status);
+
+      if (order == ACCEPTED) {
+        // Cargar el archivo en el hashmap local
+        hashmap.addAndInc(k);
+        // hashmap.printAll();
+      }
+
+      free(key);
+    }
 }
 
 void trabajarArduamente() {

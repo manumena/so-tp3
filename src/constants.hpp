@@ -11,6 +11,9 @@
 #define MEMBER_RES_TAG			5
 #define MAXIMUM_MSG_START_TAG	6
 #define MAXIMUM_WORD_TAG		7
+#define ADD_AND_INC_REQ_TAG		8
+#define ADD_AND_INC_ACCEPT_TAG	9
+#define ADD_AND_INC_ORDER_TAG	10
 
 #define REJECTED	0
 #define ACCEPTED 	1
