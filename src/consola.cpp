@@ -283,8 +283,11 @@ void test_consola(unsigned int np_param) {
     params.push_back("testfile1");
     load(params);
     member("no");
+    member("si");
     addAndInc("si");
     member("si");
-
+    member("nose");
+    // addAndInc("si");
+    // maximum();
     quit();
 }
