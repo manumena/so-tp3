@@ -1,0 +1,21 @@
+\section{Introducción}
+
+El motivo de este trabajo práctico fue reforzar los conocimientos sobre
+sistemas distribuídos mediante el envío de mensajes. Se realizó utilizando la
+interfaz MPI, ejecutando varios procesos de los cuales uno (el nodo consola)
+dirige al resto (indistinguibles entre sí) y se encarga de la entrada y salida
+de los comandos.
+
+El objetivo es desarrolar un mapa de hash distribuído y replicar el comportamiento
+de ConcurrentHashMap pero utilizando distintos nodos (simulan ser máquinas
+distintas) en lugar de tan solo hilos y que la comunicación sea entre máquinas
+distintas mediante mensajes.
+
+Antes de enviar cualquier mensaje, los nodos deben realizar tareas de
+procesamiento durante una cantidad de tiempo no determinística. Este
+comportamiento es simulado realizando llamadas a la función
+\textbf{trabajarArduamente()} donde corresponda.
+
+Por último, se incluye un conjunto de casos de prueba diseñados para verificar
+los métodos y abordar todos los casos posibles, acompañado de una explicación
+de cada uno y de sus objetivos.
