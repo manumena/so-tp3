@@ -73,12 +73,11 @@ static void quit() {
 // Esta función calcula el máximo con todos los nodos
 static void maximum() {
 
-    HashMap *mapa = new HashMap();
+    HashMap mapa;
 
     //enviarmensaje a todos
-    char *msg = "START";
     for (unsigned int i = 0; i < np; ++i){
-        MPI_Send( msg, sizeof(msg), MPI_CHAR, i, MAXIMUM_MSG_START_TAG, MPI_COMM_WORLD);
+        MPI_Send( NULL, 0, MPI_CHAR, i, MAXIMUM_MSG_START_TAG, MPI_COMM_WORLD);
     }
 
     unsigned int HASHMAP_VACIOS = 0;
@@ -102,13 +101,13 @@ static void maximum() {
         if(wordSize == 0){
             HASHMAP_VACIOS++;
         }else{
-            mapa->addAndInc(wordPointer);
+            mapa.addAndInc(wordPointer);
         }
 
         free(wordPointer);
     }
 
-    pair<string, unsigned int> result = mapa->maximum();
+    pair<string, unsigned int> result = mapa.maximum();
 
     cout << "El máximo es <" << result.first <<"," << result.second << ">" << endl;
 }

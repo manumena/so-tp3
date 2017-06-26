@@ -72,7 +72,7 @@ void nodo(unsigned int rank) {
     		free(key);
     	}
 
-      if(status.MPI_TAG == MAXIMUM_MSG_START_TAG){
+        if(status.MPI_TAG == MAXIMUM_MSG_START_TAG){
             int msgsize;
             MPI_Get_count(&status, MPI_CHAR, &msgsize);
 
@@ -82,9 +82,7 @@ void nodo(unsigned int rank) {
 
             printf("[%d] Recibo el mensaje %s\n", rank, msg);
 
-
             HashMap::iterator it = hashmap.begin();
-
             while(it != hashmap.end()){
                 string word = *it;
 
@@ -98,6 +96,8 @@ void nodo(unsigned int rank) {
                 it++;
             }
             MPI_Isend(NULL, 0, MPI_CHAR, rank, MAXIMUM_WORD_TAG, MPI_COMM_WORLD, &req);
+
+            free(msg);
 
             trabajarArduamente();
         }
