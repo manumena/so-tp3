@@ -151,7 +151,7 @@ static void addAndInc(string key) {
     strcpy(keyPointer, key.c_str());
 
     // Mandar mensaje a todos
-    for (unsigned int i = 0; i < np; i++) {
+    for (unsigned int i = 1; i < np; i++) {
         MPI_Isend(keyPointer, key.size() + 1, MPI_CHAR, i, ADD_AND_INC_REQ_TAG, MPI_COMM_WORLD, &req);
     }
 
@@ -274,4 +274,17 @@ void consola(unsigned int np_param) {
         fflush(stdout);
         fin = procesar_comandos();
     }
+}
+
+void test_consola(unsigned int np_param) {
+    np = np_param;
+    //load
+    list<string> params;
+    params.push_back("testfile1");
+    load(params);
+    member("no");
+    addAndInc("si");
+    member("si");
+
+    quit();
 }

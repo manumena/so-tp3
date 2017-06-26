@@ -8,4 +8,6 @@
  */
 void consola(unsigned int np);
 
+void test_consola(unsigned int np);
+
 #endif  /* _CONSOLA_H */

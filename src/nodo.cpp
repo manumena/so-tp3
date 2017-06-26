@@ -39,7 +39,7 @@ void nodo(unsigned int rank) {
     		// Recibir nombre de archivo
     		char *filename = (char *) malloc(filenameSize);
     		MPI_Recv(filename, filenameSize, MPI_CHAR, ROOT, LOAD_REQ_TAG, MPI_COMM_WORLD, &status);
-			string fname(filename);
+			  string fname(filename);
 
     		// Enviar mensaje de aceptacion de carga
             MPI_Request req;
@@ -57,7 +57,7 @@ void nodo(unsigned int rank) {
     		free(filename);
     	}
 
-    	if (status.MPI_TAG == MEMBER_REQ_TAG) {
+      if (status.MPI_TAG == MEMBER_REQ_TAG) {
     		int keySize;
     		MPI_Get_count(&status, MPI_CHAR, &keySize);
 
@@ -72,7 +72,7 @@ void nodo(unsigned int rank) {
     		free(key);
     	}
 
-    if(status.MPI_TAG == MAXIMUM_MSG_START_TAG){
+      if(status.MPI_TAG == MAXIMUM_MSG_START_TAG){
             int msgsize;
             MPI_Get_count(&status, MPI_CHAR, &msgsize);
 
@@ -101,29 +101,25 @@ void nodo(unsigned int rank) {
 
             trabajarArduamente();
         }
-    }
 
-    if (status.MPI_TAG == ADD_AND_INC_REQ_TAG) {
-      int keySize;
-      MPI_Get_count(&status, MPI_CHAR, &keySize);
+        if (status.MPI_TAG == ADD_AND_INC_REQ_TAG) {
+          int keySize;
+          MPI_Get_count(&status, MPI_CHAR, &keySize);
 
-      char *key = (char *) malloc(keySize);
-      MPI_Recv(key, keySize, MPI_CHAR, ROOT, ADD_AND_INC_REQ_TAG, MPI_COMM_WORLD, &status);
-      string k(key);
-
-      // Enviar mensaje de aceptacion de carga
-      MPI_Isend("", 0, MPI_CHAR, ROOT, ADD_AND_INC_ACCEPT_TAG, MPI_COMM_WORLD, &req);
-
-      // Esperar a recibir la orden
-      int order;
-      MPI_Recv(&order, 1, MPI_INT, ROOT, LOAD_ORDER_TAG, MPI_COMM_WORLD, &status);
-
-      if (order == ACCEPTED) {
-        // Cargar el archivo en el hashmap local
-        hashmap.addAndInc(k);
-      }
-
-      free(key);
+          char *key = (char *) malloc(keySize);
+          MPI_Recv(key, keySize, MPI_CHAR, ROOT, ADD_AND_INC_REQ_TAG, MPI_COMM_WORLD, &status);
+          string k(key);
+          // Enviar mensaje de aceptacion de carga
+          MPI_Isend("", 0, MPI_CHAR, ROOT, ADD_AND_INC_ACCEPT_TAG, MPI_COMM_WORLD, &req);
+          // Esperar a recibir la orden
+          int order;
+          MPI_Recv(&order, 1, MPI_INT, ROOT, ADD_AND_INC_ORDER_TAG, MPI_COMM_WORLD, &status);
+          if (order == ACCEPTED) {
+            // Cargar el archivo en el hashmap local
+            hashmap.addAndInc(k);
+          }
+          free(key);
+        }
     }
 }
 
