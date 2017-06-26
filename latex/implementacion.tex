@@ -1,0 +1,43 @@
+\section{Implementación}
+
+\subsection{Nodo}
+
+El nodo tiene en su implementación un ciclo principal en donde en principio
+se recibe un mensaje y se determina mediante \textit{probe} qué tipo de
+mensaje es para seguir adelante con la operación correspondiente.
+
+Cada uno posee su propio hashmap a modo de formar entre todos los nodos
+un mapa distribuído.
+
+\subsection{Load}
+
+Este método recibe una lista de rutas a archivos y se encarga de cargarlos.
+
+Esta implementación recorre la lista, y por cada archivo envía, de manera
+no bloqueante, un mensaje a cada nodo con el nombre del archivo, solicitando
+que el mismo sea cargado. Luego, se queda a la espera de una contestación. El
+primer nodo en contestar el mensaje es el elegido para cargar el archivo; en
+ese momento se envía un mensaje al elegido, confirmando la orden, y un mensaje
+al resto comunicando que el archivo ya ha sido tomado por otro nodo. Una vez
+hecho esto, se pasa a la próxima iteración y se realiza lo mismo para el
+siguiente archivo.
+
+\subsection{Member}
+
+Recibe la clave que desea buscarse en el mapa distribuído. Envía de manera no
+bloqueante la solicitud de búsqueda de la clave a todos los nodos y permanece
+a la espera de la respuesta de cada uno, efectuando una recepción bloqueante
+de mensajes. Al recibir las respuestas solo resta comprobar si la clave existe
+en el mapa del nodo emisor, de ser falso, se continúa la recepción de
+mensajes, de ser verdadero se establece la variable de retorno en verdadero y
+se continúa la recepción para evitar que las respuestas perduren sin ser
+leídas.
+
+Por su parte, al recibir la orden de ejecutar \textit{member}, los nodos
+solamente deben llamar a \textit{member} dentro del mapa que almacenan
+localmente y enviar el resultado al nodo raíz.
+
+\subsection{Quit}
+
+Se envía de manera no bloqueante la señal de finalización con la cual cada
+nodo rompe el ciclo principal y concluye su ejecución.
