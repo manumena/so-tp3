@@ -29,7 +29,8 @@ int main(int argc, char *argv[]) {
 
     if (rank == 0) {
         // Soy el proceso consola
-        consola(np);
+        consola c;
+        c.test_consola(np);
     }
     else {
         // Soy un nodo que procesa

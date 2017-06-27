@@ -6,8 +6,9 @@ CFLAGS+= -Wall -g $(INCL)
 CC=gcc
 MPICC=  $(MPIROOT)/bin/mpic++
 INCL= -I$(MPIROOT)/include
-SRCS= consola.cpp test.cpp nodo.cpp HashMap.cpp
-TEST= test
+SRCS= consola.cpp nodo.cpp HashMap.cpp
+TEST_SRCS= test.cpp nodo.cpp HashMap.cpp
+TEST_BIN= test
 BIN= dist_hashmap
 
 all: dist_hashmap
@@ -15,11 +16,11 @@ all: dist_hashmap
 $(BIN): $(SRCS)
 	$(MPICC) $(CFLAGS) -o $(BIN) $(SRCS)
 
-test: $(SRCS)
-	$(MPICC) $(CFLAGS) -o $(TEST) $(SRCS)
+$(TEST_BIN): $(TEST_SRCS)
+	$(MPICC) $(CFLAGS) -o $(TEST_BIN) $(TEST_SRCS)
 
 
 clean:
-	rm -f $(BIN) $(TEST)
+	rm -f $(BIN) $(TEST_BIN)
 
 new: clean all

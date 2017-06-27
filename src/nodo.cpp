@@ -72,34 +72,34 @@ void nodo(unsigned int rank) {
     		free(key);
     	}
 
-        if(status.MPI_TAG == MAXIMUM_MSG_START_TAG){
-            int msgsize;
-            MPI_Get_count(&status, MPI_CHAR, &msgsize);
+      if(status.MPI_TAG == MAXIMUM_MSG_START_TAG){
+        // int msgsize;
+        // MPI_Get_count(&status, MPI_CHAR, &msgsize);
+        //
+        // char *msg = (char *) malloc(msgsize);
 
-            char *msg = (char *) malloc(msgsize);
+        // MPI_Recv(msg, msgsize, MPI_CHAR, ROOT, MAXIMUM_MSG_START_TAG, MPI_COMM_WORLD, &status);
 
-            MPI_Recv(msg, msgsize, MPI_CHAR, ROOT, MAXIMUM_MSG_START_TAG, MPI_COMM_WORLD, &status);
+        printf("[%d] Recibo el mensaje %s\n", rank, msg);
 
-            printf("[%d] Recibo el mensaje %s\n", rank, msg);
+        HashMap::iterator it = hashmap.begin();
+        while(it != hashmap.end()){
+          string word = *it;
 
-            HashMap::iterator it = hashmap.begin();
-            while(it != hashmap.end()){
-                string word = *it;
+          // Transformar el string en char* para enviar
+          char *wordPointer = (char *) malloc(word.size() + 1);
+          strcpy(wordPointer, word.c_str());
 
-                // Transformar el string en char* para enviar
-                char *wordPointer = (char *) malloc(word.size() + 1);
-                strcpy(wordPointer, word.c_str());
+          MPI_Isend(wordPointer, word.size() + 1, MPI_CHAR, rank, MAXIMUM_WORD_TAG, MPI_COMM_WORLD, &req);
 
-                MPI_Isend(wordPointer, word.size() + 1, MPI_CHAR, rank, MAXIMUM_WORD_TAG, MPI_COMM_WORLD, &req);
+          free(wordPointer);
+          it++;
+          }
+          MPI_Isend(NULL, 0, MPI_CHAR, rank, MAXIMUM_WORD_TAG, MPI_COMM_WORLD, &req);
 
-                free(wordPointer);
-                it++;
-            }
-            MPI_Isend(NULL, 0, MPI_CHAR, rank, MAXIMUM_WORD_TAG, MPI_COMM_WORLD, &req);
+          free(msg);
 
-            free(msg);
-
-            trabajarArduamente();
+          trabajarArduamente();
         }
 
         if (status.MPI_TAG == ADD_AND_INC_REQ_TAG) {

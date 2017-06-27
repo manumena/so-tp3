@@ -74,10 +74,11 @@ static void quit() {
 static void maximum() {
 
     HashMap mapa;
-
+    MPI_Request req;
     //enviarmensaje a todos
-    for (unsigned int i = 0; i < np; ++i){
-        MPI_Send( NULL, 0, MPI_CHAR, i, MAXIMUM_MSG_START_TAG, MPI_COMM_WORLD);
+    for (unsigned int i = 1; i < np; ++i){
+        cout << "envio maximum tag a <" << i << "> ." << endl;
+        MPI_Isend( NULL, 0, MPI_CHAR, i, MAXIMUM_MSG_START_TAG, MPI_COMM_WORLD, &req);
     }
 
     unsigned int HASHMAP_VACIOS = 0;
@@ -276,17 +277,18 @@ void consola(unsigned int np_param) {
 }
 
 void test_consola(unsigned int np_param) {
-    np = np_param;
+    np = 5;
     //load
     list<string> params;
     params.push_back("testfile1");
     load(params);
-    member("no");
-    member("si");
-    addAndInc("si");
-    member("si");
-    member("nose");
+    maximum();
+    // member("no");
+    // member("si");
     // addAndInc("si");
-    // maximum();
+    // member("si");
+    // member("nose");
+    // addAndInc("si");
+
     quit();
 }
