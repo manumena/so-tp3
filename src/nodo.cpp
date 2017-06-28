@@ -53,7 +53,7 @@ void nodo(unsigned int rank) {
     		if (order == ACCEPTED) {
     			// Cargar el archivo en el hashmap local
     			hashmap.load(fname);
-    			printf("[%d] Loaded %s file \n", rank, filename);
+    			// printf("[%d] Loaded %s file \n", rank, filename);
           trabajarArduamente();
     			MPI_Isend("", 0, MPI_CHAR, ROOT, LOAD_COMPLETE_TAG, MPI_COMM_WORLD, &req);
     		}
@@ -77,60 +77,54 @@ void nodo(unsigned int rank) {
     		free(key);
     	}
 
-        if(status.MPI_TAG == MAXIMUM_MSG_START_TAG){
-            int msgsize;
-            MPI_Get_count(&status, MPI_CHAR, &msgsize);
+      if(status.MPI_TAG == MAXIMUM_MSG_START_TAG){
 
-            char *msg = (char *) malloc(msgsize);
+        MPI_Recv(NULL, 0, MPI_CHAR, ROOT, MAXIMUM_MSG_START_TAG, MPI_COMM_WORLD, &status);
+        // printf("[%d] Recibo el tag MAXIMUM_MSG_START_TAG \n", rank );
+        trabajarArduamente();
+        HashMap::iterator it = hashmap.begin();
+        while(it != hashmap.end()){
+          string word = *it;
 
-            MPI_Recv(msg, msgsize, MPI_CHAR, ROOT, MAXIMUM_MSG_START_TAG, MPI_COMM_WORLD, &status);
+          // Transformar el string en char* para enviar
+          char *wordPointer = (char *) malloc(word.size() + 1);
+          strcpy(wordPointer, word.c_str());
 
-            printf("[%d] Recibo el mensaje %s\n", rank, msg);
+          MPI_Isend(wordPointer, word.size() + 1, MPI_CHAR, ROOT, MAXIMUM_WORD_TAG, MPI_COMM_WORLD, &req);
 
-            HashMap::iterator it = hashmap.begin();
-            while(it != hashmap.end()){
-                string word = *it;
-
-                // Transformar el string en char* para enviar
-                char *wordPointer = (char *) malloc(word.size() + 1);
-                strcpy(wordPointer, word.c_str());
-
-                MPI_Isend(wordPointer, word.size() + 1, MPI_CHAR, rank, MAXIMUM_WORD_TAG, MPI_COMM_WORLD, &req);
-
-                free(wordPointer);
-                it++;
-            }
-            trabajarArduamente();
-            MPI_Isend(NULL, 0, MPI_CHAR, rank, MAXIMUM_WORD_TAG, MPI_COMM_WORLD, &req);
-
-            free(msg);
-
-            trabajarArduamente();
+          // printf("[%d] Envio la key %s con size %ld al nodo 0 \n", rank, wordPointer,word.size() + 1);
+          //free(wordPointer);
+          it++;
         }
-
-        if (status.MPI_TAG == ADD_AND_INC_REQ_TAG) {
-          int keySize;
-          MPI_Get_count(&status, MPI_CHAR, &keySize);
-
-          char *key = (char *) malloc(keySize);
-          MPI_Recv(key, keySize, MPI_CHAR, ROOT, ADD_AND_INC_REQ_TAG, MPI_COMM_WORLD, &status);
-          string k(key);
-          // Enviar mensaje de aceptacion de carga
+        if(hashmap.size() > 0)
           trabajarArduamente();
-          MPI_Isend("", 0, MPI_CHAR, ROOT, ADD_AND_INC_ACCEPT_TAG, MPI_COMM_WORLD, &req);
-          // Esperar a recibir la orden
-          int order;
-          MPI_Recv(&order, 1, MPI_INT, ROOT, ADD_AND_INC_ORDER_TAG, MPI_COMM_WORLD, &status);
-          if (order == ACCEPTED) {
-            // Cargar el archivo en el hashmap local
-            hashmap.addAndInc(k);
-          }
-          free(key);
-          trabajarArduamente();
-          MPI_Isend("", 0, MPI_CHAR, ROOT, ADD_AND_INC_COMPLETE_TAG, MPI_COMM_WORLD, &req);
+        // printf("[%d] Ya le paso sus keys a el nodo ROOT \n", rank);
+        MPI_Isend(NULL, 0, MPI_CHAR, ROOT, MAXIMUM_WORD_TAG, MPI_COMM_WORLD, &req);
+      }
+
+      if (status.MPI_TAG == ADD_AND_INC_REQ_TAG) {
+        int keySize;
+        MPI_Get_count(&status, MPI_CHAR, &keySize);
+
+        char *key = (char *) malloc(keySize);
+        MPI_Recv(key, keySize, MPI_CHAR, ROOT, ADD_AND_INC_REQ_TAG, MPI_COMM_WORLD, &status);
+        string k(key);
+        // Enviar mensaje de aceptacion de carga
+        trabajarArduamente();
+        MPI_Isend("", 0, MPI_CHAR, ROOT, ADD_AND_INC_ACCEPT_TAG, MPI_COMM_WORLD, &req);
+        // Esperar a recibir la orden
+        int order;
+        MPI_Recv(&order, 1, MPI_INT, ROOT, ADD_AND_INC_ORDER_TAG, MPI_COMM_WORLD, &status);
+        if (order == ACCEPTED) {
+          // Cargar el archivo en el hashmap local
+          hashmap.addAndInc(k);
         }
+        free(key);
+        trabajarArduamente();
+        MPI_Isend("", 0, MPI_CHAR, ROOT, ADD_AND_INC_COMPLETE_TAG, MPI_COMM_WORLD, &req);
+      }
     }
-    printf("[%d] Quit \n", rank);
+    // printf("[%d] Quit \n", rank);
 }
 
 void trabajarArduamente() {
