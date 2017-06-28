@@ -98,7 +98,6 @@ static void maximum() {
       MPI_Recv(keyPointer, keySize, MPI_CHAR, MPI_ANY_SOURCE, MAXIMUM_WORD_TAG, MPI_COMM_WORLD, &status);
 
       if(keySize == 0){
-        printf("[0] Un nodo menos \n.");
         HASHMAP_VACIOS++;
       }else{
         string key(keyPointer);
@@ -176,7 +175,7 @@ static void addAndInc(string key) {
         MPI_Recv(NULL, 0, MPI_CHAR, MPI_ANY_SOURCE, ADD_AND_INC_COMPLETE_TAG, MPI_COMM_WORLD, &status);
 
 
-    cout << "Agregado: " << key << " en el nodo " << adder << " ."<< endl;
+    cout << "Se Agrego <" << key << "> en el nodo <" << adder << "> ."<< endl;
 }
 
 
@@ -284,38 +283,36 @@ void test_consola(unsigned int np_param) {
   np = np_param;
   //load
   list<string> params;
-  // params.push_back("testfile1");
-  // params.push_back("testfile2");
-  // params.push_back("testfile3");
-  // params.push_back("testfile4");
-  // params.push_back("testfile5");
-  // printf("se llama al load con esta lista [testfile1,testfile2,testfile3,testfile4,testfile5] de nombres de archivo \n");
-  // // test member
-  // member("key");
-  // // test load
-  // load(params);
-  // for (list<string>::iterator it=params.begin(); it != params.end(); ++it) {
-  //   string filename = *it;
-  //   fstream file(filename.c_str(), file.in);
-  //   string read_word;
-  //   while (file >> read_word) {
-  //       member(read_word);
-  //   }
-  // }
+  params.push_back("testfile1");
+  params.push_back("testfile2");
+  params.push_back("testfile3");
+  params.push_back("testfile4");
+  params.push_back("testfile5");
+  printf("se llama al load con esta lista [testfile1,testfile2,testfile3,testfile4,testfile5] de nombres de archivo \n");
+  // test member
+  member("key");
+  // test load
+  load(params);
+  for (list<string>::iterator it=params.begin(); it != params.end(); ++it) {
+    string filename = *it;
+    fstream file(filename.c_str(), file.in);
+    string read_word;
+    while (file >> read_word) {
+        member(read_word);
+    }
+  }
   // test maximum
-  addAndInc("key");
   maximum();
 
   // test addAndInc
-  // member("key");
-  // addAndInc("key");
-  // member("key");
-  // addAndInc("key");
-  // addAndInc("key");
-  // addAndInc("key");
-  // addAndInc("key");
-  // addAndInc("key");
-  // maximum();
-
-    quit();
+  member("key");
+  addAndInc("key");
+  member("key");
+  addAndInc("key");
+  addAndInc("key");
+  maximum();
+  addAndInc("palabraA");
+  addAndInc("palabraA");
+  maximum();
+  quit();
 }

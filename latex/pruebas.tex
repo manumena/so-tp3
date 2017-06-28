@@ -9,7 +9,7 @@ de procesos a lanzar.
 Se ejecuta a $load$ con una lista de nombres de archivos [testfile1,testfile2,
 testfile3,testfile4,testfile5]. Para probar que se cargaron las palabras
 contenidas en los archivos, se recorre los archivos y por cada palabra se
-ejecuta un $member$.
+ejecuta un $member$, estos deberian responder que existen.
 
 \subsection{Member}
 
@@ -28,21 +28,24 @@ Al final del test se ejecuta un $quit$, se deberia ver como cada nodo escribe
 quit antes de terminar.
 
 \subsection{AddAndInc}
+Se ejecuta $member$ pasandole como parametro "key" y responde que
+no existe, Luego se ejecuta $AddAndInc$ pasandole como parametro "key", luego
+se ejecuta un $member$ pasandole como parametro "key", deberia decir que
+existe, así probamos que $addAndInc$ agrega keys.
 
-Se ejecuta $AddAndInc$ pasandole como parametro "key", luego se ejecuta un
-$member$ pasandole como parametro "key", deberia decir que existe, previo al
-$addAndInc$ se ejecuto $member$ pasandole como parametro "key" y respondio que
-no existia, así probamos que $AddAndInc$ agrega la key.
-
-Se ejecuta $AddAndInc$, pasandole como parametro "key", cinco veces, despues se
-ejecuta $maximum$, deberia decir que el $string$ que más aparece es "key" con 6
+Se ejecuta dos veces $AddAndInc$, pasandole como parametro "key", despues se
+ejecuta $maximum$, deberia decir que el $string$ que más aparece es "key" con 3
 apariciones, así probamos que la cantidad de aparariciones de la key "key" es
-la misma cantidad de veces que se ejecuto $AddAndInc$.
+la misma cantidad de veces que se ejecuto $AddAndInc$, entonces si existe la
+key aumenta su cantidad de apariciones
 
 \subsection{Maximum}
 
 Luego de ejecutar $load$ pasandole como parametro una lista de nombres de
-archivos, se ejecuta $maximum$, despues se ejecuta sies veces $AddAndInc$,
-pasandole como parametro "key" por último se ejecuta $maximum$, este deberia
-responder que el $string$ que más aparece es "key" con 6 apariciones, así
-probamos que maximum responde la key que tiene más apariciones
+archivos, se ejecuta $maximum$, debera responder el string "palabraA" con dos
+ocurrencias , despues se ejecuta 3 veces $addAndInc$, pasandole como parametro
+"key", luego ejecuta $maximum$, se espera que responda que el $string$ que más
+aparece es "key" con 3 apariciones, por último se ejecuta dos veces $addAndInc$
+pasandole como parametro "palabraA" y se ejecuta $maximum$, debera responder
+que el $string$  "palabraA"e s el maximo con 4 ocurrencias, así probamos que
+$maximum$, retorna la key con más aceptaciones. 
