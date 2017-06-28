@@ -174,6 +174,10 @@ static void addAndInc(string key) {
 
     free(keyPointer);
 
+    for (unsigned int i = 0; i < np-1; i++)
+        MPI_Recv(NULL, 0, MPI_CHAR, MPI_ANY_SOURCE, ADD_AND_INC_COMPLETE_TAG, MPI_COMM_WORLD, &status);
+
+
     cout << "Agregado: " << key << " en el nodo " << adder << " ."<< endl;
 }
 

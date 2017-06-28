@@ -42,8 +42,8 @@ void nodo(unsigned int rank) {
 			  string fname(filename);
 
     		// Enviar mensaje de aceptacion de carga
-            MPI_Request req;
-            trabajarArduamente();
+        MPI_Request req;
+        trabajarArduamente();
     		MPI_Isend("", 0, MPI_CHAR, ROOT, LOAD_ACCEPT_TAG, MPI_COMM_WORLD, &req);
 
     		// Esperar a recibir la orden
@@ -54,6 +54,7 @@ void nodo(unsigned int rank) {
     			// Cargar el archivo en el hashmap local
     			hashmap.load(fname);
     			printf("[%d] Loaded\n", rank);
+          trabajarArduamente();
     			MPI_Isend("", 0, MPI_CHAR, ROOT, LOAD_COMPLETE_TAG, MPI_COMM_WORLD, &req);
     		}
 
@@ -125,6 +126,8 @@ void nodo(unsigned int rank) {
             hashmap.addAndInc(k);
           }
           free(key);
+          trabajarArduamente();
+          MPI_Isend("", 0, MPI_CHAR, ROOT, ADD_AND_INC_COMPLETE_TAG, MPI_COMM_WORLD, &req);
         }
     }
 }
