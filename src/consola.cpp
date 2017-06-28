@@ -292,8 +292,7 @@ void test_consola(unsigned int np_param) {
     params.push_back("testfile3");
     params.push_back("testfile4");
     params.push_back("testfile5");
-    printf("se llama al load con esta lista [testfile1,testfile2,testfile3,"
-      + "testfile4,testfile5] de nombres de archivo \n");
+    printf("se llama al load con esta lista [testfile1,testfile2,testfile3,testfile4,testfile5] de nombres de archivo \n");
     // test member
     member("key");
     // test load
