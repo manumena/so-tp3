@@ -22,6 +22,14 @@ al resto comunicando que el archivo ya ha sido tomado por otro nodo. Una vez
 hecho esto, se pasa a la próxima iteración y se realiza lo mismo para el
 siguiente archivo.
 
+Habiendo sido enviadas todas las órdenes de carga, el método se mantiene a la
+espera de que los nodos contesten con un mensaje indicando que el archivo ha
+sido cargado. El motivo de esto es que el tiempo que emplean los nodos para
+cargar el archivo no es conocido por la consola, por lo que si no se esperase
+una confirmación, el usuario podría intentar ejecutar otra operación mientras
+que los archivos no han sido cargados por completo, pudiendo generar
+inconsistencia.
+
 \subsection{Member}
 
 Recibe la clave que desea buscarse en el mapa distribuído. Envía de manera no
