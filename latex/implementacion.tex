@@ -71,16 +71,17 @@ no se haya terminado de agregar la key, pudiendo generar inconsistencia.
 
 \subsection{Maximum}
 
-Se crea un hashmap para cargar todas las palabras presentes en los mapas de 
-los nodos. Se le envía una señal a todos los nodos, indicando que la consola espera  
+Se crea un hashmap para cargar todas las palabras presentes en los mapas de
+los nodos. Se le envía una señal a todos los nodos, indicando que la consola espera
 recibir todas las palabras. De manera bloqueante se reciben las palabras
-y se cargan en el mapa creado, hasta que los nodos indiquen que enviaron todas sus 
-palabras mediante enviar una referencia a 'NULL'. Por último, se calcula el máximo 
-utilizando la función maximum() de la clase HashMap.
+y se cargan en el mapa creado, hasta que los nodos indiquen que enviaron todas sus
+palabras mediante enviar una referencia a 'NULL'. Por último, se calcula el máximo
+utilizando la función $maximum$ de la clase HashMap.
 
-Los nodos registran el pedido de envío de todas sus palabras y realizan la función 
-trabajarArduamente() para hacer tiempo entre que se recibe el mensaje hasta que
-se comienzan a enviar las palabras. Luego procede a enviarlas de manera no bloqueante 
-con la funcion MPI_Isend(), de modo que la consola las obtenga cuando este disponible.
-Una vez que termina se vuelve a realizar la función trabajarArduamente() para separar
+
+Los nodos registran el pedido de envío de todas sus palabras y realizan la función
+$trabajarArduamente$ para hacer tiempo entre que se recibe el mensaje hasta que
+se comienzan a enviar las palabras. Luego procede a enviarlas de manera no bloqueante
+con la funcion $MPI_Isend$, de modo que la consola las obtenga cuando este disponible.
+Una vez que termina se vuelve a realizar la función $trabajarArduamente$ para separar
 el envío de las palabras validas del caracter 'NULL' que indica que no se enviarán mas palabras.

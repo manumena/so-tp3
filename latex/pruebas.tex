@@ -1,7 +1,7 @@
 \section{Pruebas}
 
 Para compilar las pruebas hay que correr $make test$ parado en la carpeta $src$.
-Luego para ejecutar las pruebas "mpiexec -np N ./test", donde N es la cantidad
+Luego para ejecutar las pruebas 'mpiexec -np N ./test' , donde N es la cantidad
 de procesos a lanzar.
 
 \subsection{Load}
@@ -13,13 +13,13 @@ ejecuta un $member$, estos deberian responder que existen.
 
 \subsection{Member}
 
-Se ejecuta un $member$ pasandole como parametro "key", deberia responder que
+Se ejecuta un $member$ pasandole como parametro 'key' , deberia responder que
 no existe. Luego de ejecuta $load$ con una lista de nombres de archivos, se
 recorre los archivos y por cada palabra se ejecuta un $member$, deberian
 responder que existen. Despues se ejecuta $member$ pasandole como parametro
-"key", deberia decir que no existe, ya que "key" no estaba en los archivos,
-despues se ejecuta un $addAndInc$ pasandole como parametro "key", por último
-se vuelve a ejecutar $member$ pasandole como parametro "key", deberia decir
+'key' , deberia decir que no existe, ya que 'key' no estaba en los archivos,
+despues se ejecuta un $addAndInc$ pasandole como parametro 'key' , por último
+se vuelve a ejecutar $member$ pasandole como parametro 'key', deberia decir
 que existe.
 
 \subsection{Quit}
@@ -28,24 +28,24 @@ Al final del test se ejecuta un $quit$, se deberia ver como cada nodo escribe
 quit antes de terminar.
 
 \subsection{AddAndInc}
-Se ejecuta $member$ pasandole como parametro "key" y responde que
-no existe, Luego se ejecuta $AddAndInc$ pasandole como parametro "key", luego
-se ejecuta un $member$ pasandole como parametro "key", deberia decir que
+Se ejecuta $member$ pasandole como parametro 'key' y responde que
+no existe, Luego se ejecuta $AddAndInc$ pasandole como parametro 'key' , luego
+se ejecuta un $member$ pasandole como parametro 'key' , deberia decir que
 existe, así probamos que $addAndInc$ agrega keys.
 
-Se ejecuta dos veces $AddAndInc$, pasandole como parametro "key", despues se
-ejecuta $maximum$, deberia decir que el $string$ que más aparece es "key" con 3
-apariciones, así probamos que la cantidad de aparariciones de la key "key" es
+Se ejecuta dos veces $AddAndInc$, pasandole como parametro 'key' , despues se
+ejecuta $maximum$, deberia decir que el $string$ que más aparece es 'key' con 3
+apariciones, así probamos que la cantidad de aparariciones de la key 'key' es
 la misma cantidad de veces que se ejecuto $AddAndInc$, entonces si existe la
 key aumenta su cantidad de apariciones
 
 \subsection{Maximum}
 
 Luego de ejecutar $load$ pasandole como parametro una lista de nombres de
-archivos, se ejecuta $maximum$, debera responder el string "palabraA" con dos
+archivos, se ejecuta $maximum$, debera responder el string 'palabraA' con dos
 ocurrencias , despues se ejecuta 3 veces $addAndInc$, pasandole como parametro
-"key", luego ejecuta $maximum$, se espera que responda que el $string$ que más
-aparece es "key" con 3 apariciones, por último se ejecuta dos veces $addAndInc$
-pasandole como parametro "palabraA" y se ejecuta $maximum$, debera responder
-que el $string$  "palabraA"e s el maximo con 4 ocurrencias, así probamos que
-$maximum$, retorna la key con más aceptaciones. 
+'key' , luego ejecuta $maximum$, se espera que responda que el $string$ que más
+aparece es 'key' con 3 apariciones, por último se ejecuta dos veces $addAndInc$
+pasandole como parametro 'palabraA' y se ejecuta $maximum$, debera responder
+que el $string$  'palabraA' es el maximo con 4 ocurrencias, así probamos que
+$maximum$, retorna la key con más aceptaciones.
