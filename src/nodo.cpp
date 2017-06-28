@@ -53,7 +53,7 @@ void nodo(unsigned int rank) {
     		if (order == ACCEPTED) {
     			// Cargar el archivo en el hashmap local
     			hashmap.load(fname);
-    			printf("[%d] Loaded\n", rank);
+    			printf("[%d] Loaded %s file \n", rank, filename);
           trabajarArduamente();
     			MPI_Isend("", 0, MPI_CHAR, ROOT, LOAD_COMPLETE_TAG, MPI_COMM_WORLD, &req);
     		}
@@ -130,6 +130,7 @@ void nodo(unsigned int rank) {
           MPI_Isend("", 0, MPI_CHAR, ROOT, ADD_AND_INC_COMPLETE_TAG, MPI_COMM_WORLD, &req);
         }
     }
+    printf("[%d] Quit \n", rank);
 }
 
 void trabajarArduamente() {

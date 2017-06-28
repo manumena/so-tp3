@@ -5,6 +5,7 @@
 #include <string>
 #include <list>
 #include <iostream>
+#include <fstream>
 #include <sstream>
 #include "consola.hpp"
 #include "HashMap.hpp"
@@ -287,13 +288,37 @@ void test_consola(unsigned int np_param) {
     //load
     list<string> params;
     params.push_back("testfile1");
+    params.push_back("testfile2");
+    params.push_back("testfile3");
+    params.push_back("testfile4");
+    params.push_back("testfile5");
+    printf("se llama al load con esta lista [testfile1,testfile2,testfile3,"
+      + "testfile4,testfile5] de nombres de archivo \n");
+    // test member
+    member("key");
+    // test load
     load(params);
-    member("no");
-    member("si");
-    addAndInc("si");
-    member("si");
-    member("nose");
-    // addAndInc("si");
+    for (list<string>::iterator it=params.begin(); it != params.end(); ++it) {
+      string filename = *it;
+      fstream file(filename.c_str(), file.in);
+      string read_word;
+      while (file >> read_word) {
+          member(read_word);
+      }
+    }
+    // test maximum
     // maximum();
+
+    // test addAndInc
+    member("key");
+    addAndInc("key");
+    member("key");
+    addAndInc("key");
+    addAndInc("key");
+    addAndInc("key");
+    addAndInc("key");
+    addAndInc("key");
+    // maximum();
+
     quit();
 }
