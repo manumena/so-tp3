@@ -43,6 +43,7 @@ void nodo(unsigned int rank) {
 
     		// Enviar mensaje de aceptacion de carga
             MPI_Request req;
+            trabajarArduamente();
     		MPI_Isend("", 0, MPI_CHAR, ROOT, LOAD_ACCEPT_TAG, MPI_COMM_WORLD, &req);
 
     		// Esperar a recibir la orden
@@ -67,6 +68,7 @@ void nodo(unsigned int rank) {
 
     		string strKey(key);
     		int esta = hashmap.member(strKey);
+    		trabajarArduamente();
     		MPI_Isend(&esta, 1, MPI_INT, ROOT, MEMBER_RES_TAG, MPI_COMM_WORLD, &req);
 
     		free(key);
@@ -95,6 +97,7 @@ void nodo(unsigned int rank) {
                 free(wordPointer);
                 it++;
             }
+            trabajarArduamente();
             MPI_Isend(NULL, 0, MPI_CHAR, rank, MAXIMUM_WORD_TAG, MPI_COMM_WORLD, &req);
 
             free(msg);
@@ -110,6 +113,7 @@ void nodo(unsigned int rank) {
           MPI_Recv(key, keySize, MPI_CHAR, ROOT, ADD_AND_INC_REQ_TAG, MPI_COMM_WORLD, &status);
           string k(key);
           // Enviar mensaje de aceptacion de carga
+          trabajarArduamente();
           MPI_Isend("", 0, MPI_CHAR, ROOT, ADD_AND_INC_ACCEPT_TAG, MPI_COMM_WORLD, &req);
           // Esperar a recibir la orden
           int order;
