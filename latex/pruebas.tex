@@ -1,0 +1,48 @@
+\section{Pruebas}
+
+Para compilar las pruebas hay que correr $make test$ parado en la carpeta $src$.
+Luego para ejecutar las pruebas "mpiexec -np N ./test", donde N es la cantidad
+de procesos a lanzar.
+
+\subsection{Load}
+
+Se ejecuta a $load$ con una lista de nombres de archivos [testfile1,testfile2,
+testfile3,testfile4,testfile5]. Para probar que se cargaron las palabras
+contenidas en los archivos, se recorre los archivos y por cada palabra se
+ejecuta un $member$.
+
+\subsection{Member}
+
+Se ejecuta un $member$ pasandole como parametro "key", deberia responder que
+no existe. Luego de ejecuta $load$ con una lista de nombres de archivos, se
+recorre los archivos y por cada palabra se ejecuta un $member$, deberian
+responder que existen. Despues se ejecuta $member$ pasandole como parametro
+"key", deberia decir que no existe, ya que "key" no estaba en los archivos,
+despues se ejecuta un $addAndInc$ pasandole como parametro "key", por último
+se vuelve a ejecutar $member$ pasandole como parametro "key", deberia decir
+que existe.
+
+\subsection{Quit}
+
+Al final del test se ejecuta un $quit$, se deberia ver como cada nodo escribe
+quit antes de terminar.
+
+\subsection{AddAndInc}
+
+Se ejecuta $AddAndInc$ pasandole como parametro "key", luego se ejecuta un
+$member$ pasandole como parametro "key", deberia decir que existe, previo al
+$addAndInc$ se ejecuto $member$ pasandole como parametro "key" y respondio que
+no existia, así probamos que $AddAndInc$ agrega la key.
+
+Se ejecuta $AddAndInc$, pasandole como parametro "key", cinco veces, despues se
+ejecuta $maximum$, deberia decir que el $string$ que más aparece es "key" con 6
+apariciones, así probamos que la cantidad de aparariciones de la key "key" es
+la misma cantidad de veces que se ejecuto $AddAndInc$.
+
+\subsection{Maximum}
+
+Luego de ejecutar $load$ pasandole como parametro una lista de nombres de
+archivos, se ejecuta $maximum$, despues se ejecuta sies veces $AddAndInc$,
+pasandole como parametro "key" por último se ejecuta $maximum$, este deberia
+responder que el $string$ que más aparece es "key" con 6 apariciones, así
+probamos que maximum responde la key que tiene más apariciones
