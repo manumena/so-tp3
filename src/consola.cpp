@@ -78,37 +78,33 @@ static void quit() {
 static void maximum() {
 
     HashMap mapa;
-
+    MPI_Request req;
+    MPI_Status status;
     //enviarmensaje a todos
-    for (unsigned int i = 0; i < np; ++i){
-        MPI_Send( NULL, 0, MPI_CHAR, i, MAXIMUM_MSG_START_TAG, MPI_COMM_WORLD);
+    for (unsigned int i = 1; i < np; ++i){
+      printf("[0] envio el tag MAXIMUM_MSG_START_TAG al nodo %d .\n", i );
+      MPI_Isend(NULL, 0, MPI_CHAR, i, MAXIMUM_MSG_START_TAG, MPI_COMM_WORLD, &req);
     }
 
     unsigned int HASHMAP_VACIOS = 0;
-    while(HASHMAP_VACIOS < np){
+    while(HASHMAP_VACIOS < np -1){
 
-        //hay alguna palabras
-        MPI_Status status;
-        MPI_Probe(MPI_ANY_SOURCE, MAXIMUM_WORD_TAG , MPI_COMM_WORLD, &status);
+      int keySize;
+      MPI_Get_count(&status, MPI_CHAR, &keySize);
+      printf("[0] Recibio el keySize %d \n", keySize);
+      // Recibir  la key
+      char *keyPointer = (char *) malloc(keySize);
+      MPI_Recv(keyPointer, keySize, MPI_CHAR, MPI_ANY_SOURCE, MAXIMUM_WORD_TAG, MPI_COMM_WORLD, &status);
 
-
-        //tamaño de la palabra
-        int wordSize;
-        MPI_Get_count(&status, MPI_CHAR, &wordSize);
-
-        //obtengo palabra
-        MPI_Status stat;
-
-        char *wordPointer = (char *) malloc(wordSize);
-        MPI_Recv( wordPointer, wordSize, MPI_CHAR, status.MPI_SOURCE, MAXIMUM_WORD_TAG, MPI_COMM_WORLD, &stat);
-
-        if(wordSize == 0){
-            HASHMAP_VACIOS++;
-        }else{
-            mapa.addAndInc(wordPointer);
-        }
-
-        free(wordPointer);
+      if(keySize == 0){
+        printf("[0] Un nodo menos \n.");
+        HASHMAP_VACIOS++;
+      }else{
+        string key(keyPointer);
+        printf("[0] Recibo la key %s \n", keyPointer);
+        mapa.addAndInc(key);
+      }
+      free(keyPointer);
     }
 
     pair<string, unsigned int> result = mapa.maximum();
@@ -284,40 +280,41 @@ void consola(unsigned int np_param) {
 }
 
 void test_consola(unsigned int np_param) {
-    np = np_param;
-    //load
-    list<string> params;
-    params.push_back("testfile1");
-    params.push_back("testfile2");
-    params.push_back("testfile3");
-    params.push_back("testfile4");
-    params.push_back("testfile5");
-    printf("se llama al load con esta lista [testfile1,testfile2,testfile3,testfile4,testfile5] de nombres de archivo \n");
-    // test member
-    member("key");
-    // test load
-    load(params);
-    for (list<string>::iterator it=params.begin(); it != params.end(); ++it) {
-      string filename = *it;
-      fstream file(filename.c_str(), file.in);
-      string read_word;
-      while (file >> read_word) {
-          member(read_word);
-      }
-    }
-    // test maximum
-    // maximum();
+  np = np_param;
+  //load
+  list<string> params;
+  // params.push_back("testfile1");
+  // params.push_back("testfile2");
+  // params.push_back("testfile3");
+  // params.push_back("testfile4");
+  // params.push_back("testfile5");
+  // printf("se llama al load con esta lista [testfile1,testfile2,testfile3,testfile4,testfile5] de nombres de archivo \n");
+  // // test member
+  // member("key");
+  // // test load
+  // load(params);
+  // for (list<string>::iterator it=params.begin(); it != params.end(); ++it) {
+  //   string filename = *it;
+  //   fstream file(filename.c_str(), file.in);
+  //   string read_word;
+  //   while (file >> read_word) {
+  //       member(read_word);
+  //   }
+  // }
+  // test maximum
+  addAndInc("key");
+  maximum();
 
-    // test addAndInc
-    member("key");
-    addAndInc("key");
-    member("key");
-    addAndInc("key");
-    addAndInc("key");
-    addAndInc("key");
-    addAndInc("key");
-    addAndInc("key");
-    // maximum();
+  // test addAndInc
+  // member("key");
+  // addAndInc("key");
+  // member("key");
+  // addAndInc("key");
+  // addAndInc("key");
+  // addAndInc("key");
+  // addAndInc("key");
+  // addAndInc("key");
+  // maximum();
 
     quit();
 }
