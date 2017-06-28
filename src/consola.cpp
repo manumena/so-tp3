@@ -82,16 +82,17 @@ static void maximum() {
     MPI_Status status;
     //enviarmensaje a todos
     for (unsigned int i = 1; i < np; ++i){
-      printf("[0] envio el tag MAXIMUM_MSG_START_TAG al nodo %d .\n", i );
+      // printf("[0] envio el tag MAXIMUM_MSG_START_TAG al nodo %d .\n", i );
       MPI_Isend(NULL, 0, MPI_CHAR, i, MAXIMUM_MSG_START_TAG, MPI_COMM_WORLD, &req);
     }
 
     unsigned int HASHMAP_VACIOS = 0;
     while(HASHMAP_VACIOS < np -1){
+      MPI_Probe(MPI_ANY_SOURCE, MAXIMUM_WORD_TAG, MPI_COMM_WORLD, &status);
 
       int keySize;
       MPI_Get_count(&status, MPI_CHAR, &keySize);
-      printf("[0] Recibio el keySize %d \n", keySize);
+      // printf("[0] Recibio el keySize %d \n", keySize);
       // Recibir  la key
       char *keyPointer = (char *) malloc(keySize);
       MPI_Recv(keyPointer, keySize, MPI_CHAR, MPI_ANY_SOURCE, MAXIMUM_WORD_TAG, MPI_COMM_WORLD, &status);
@@ -101,7 +102,7 @@ static void maximum() {
         HASHMAP_VACIOS++;
       }else{
         string key(keyPointer);
-        printf("[0] Recibo la key %s \n", keyPointer);
+        // printf("[0] Recibo la key %s \n", keyPointer);
         mapa.addAndInc(key);
       }
       free(keyPointer);

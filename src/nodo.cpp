@@ -53,7 +53,7 @@ void nodo(unsigned int rank) {
     		if (order == ACCEPTED) {
     			// Cargar el archivo en el hashmap local
     			hashmap.load(fname);
-    			printf("[%d] Loaded %s file \n", rank, filename);
+    			// printf("[%d] Loaded %s file \n", rank, filename);
           trabajarArduamente();
     			MPI_Isend("", 0, MPI_CHAR, ROOT, LOAD_COMPLETE_TAG, MPI_COMM_WORLD, &req);
     		}
@@ -80,7 +80,7 @@ void nodo(unsigned int rank) {
       if(status.MPI_TAG == MAXIMUM_MSG_START_TAG){
 
         MPI_Recv(NULL, 0, MPI_CHAR, ROOT, MAXIMUM_MSG_START_TAG, MPI_COMM_WORLD, &status);
-        printf("[%d] Recibo el tag MAXIMUM_MSG_START_TAG \n", rank );
+        // printf("[%d] Recibo el tag MAXIMUM_MSG_START_TAG \n", rank );
         trabajarArduamente();
         HashMap::iterator it = hashmap.begin();
         while(it != hashmap.end()){
@@ -92,13 +92,13 @@ void nodo(unsigned int rank) {
 
           MPI_Isend(wordPointer, word.size() + 1, MPI_CHAR, ROOT, MAXIMUM_WORD_TAG, MPI_COMM_WORLD, &req);
 
-          printf("[%d] Envio la key %s con size %ld al nodo 0 \n", rank, wordPointer,word.size() + 1);
+          // printf("[%d] Envio la key %s con size %ld al nodo 0 \n", rank, wordPointer,word.size() + 1);
           //free(wordPointer);
           it++;
         }
         if(hashmap.size() > 0)
           trabajarArduamente();
-        printf("[%d] Ya le paso sus keys a el nodo ROOT \n", rank);
+        // printf("[%d] Ya le paso sus keys a el nodo ROOT \n", rank);
         MPI_Isend(NULL, 0, MPI_CHAR, ROOT, MAXIMUM_WORD_TAG, MPI_COMM_WORLD, &req);
       }
 
@@ -124,7 +124,7 @@ void nodo(unsigned int rank) {
         MPI_Isend("", 0, MPI_CHAR, ROOT, ADD_AND_INC_COMPLETE_TAG, MPI_COMM_WORLD, &req);
       }
     }
-    printf("[%d] Quit \n", rank);
+    // printf("[%d] Quit \n", rank);
 }
 
 void trabajarArduamente() {
