@@ -55,8 +55,8 @@ nodo rompe el ciclo principal y concluye su ejecución.
 Este método recibe una string key y se encarga de agregarlo si no existe ó
 aumentar la cantidad de apareciones en el HashMap de algun nodo.
 
-Esta implementación envía, de manero no bloqueante, un mensaje a cada nodo con
-la key, solicitando que la misma sea agrega. Luego se queda a la espera de una
+Esta implementación envía, de manera no bloqueante, un mensaje a cada nodo con
+la key, solicitando que la misma se agrege. Luego se queda a la espera de una
 constestación.  El primer nodo en contestar el mensaje es el elegido para
 cargar la key; en ese momento se envía un mensaje al elegido , confirmando
 la orden, y un mensaje al resto comunicando que la key ya fue agregada por
@@ -68,3 +68,19 @@ sido agregada. El motivo de esto es que el tiempo que emplean los nodos para
 cargar el archivo no es conocido por la consola, por lo que si no se esperase
 una confirmación, el usuario podría intentar ejecutar otra operación mientras
 no se haya terminado de agregar la key, pudiendo generar inconsistencia.
+
+\subsection{Maximum}
+
+Se crea un hashmap para cargar todas las palabras presentes en los mapas de 
+los nodos. Se le envía una señal a todos los nodos, indicando que la consola espera  
+recibir todas las palabras. De manera bloqueante se reciben las palabras
+y se cargan en el mapa creado, hasta que los nodos indiquen que enviaron todas sus 
+palabras mediante enviar una referencia a 'NULL'. Por último, se calcula el máximo 
+utilizando la función maximum() de la clase HashMap.
+
+Los nodos registran el pedido de envío de todas sus palabras y realizan la función 
+trabajarArduamente() para hacer tiempo entre que se recibe el mensaje hasta que
+se comienzan a enviar las palabras. Luego procede a enviarlas de manera no bloqueante 
+con la funcion MPI_Isend(), de modo que la consola las obtenga cuando este disponible.
+Una vez que termina se vuelve a realizar la función trabajarArduamente() para separar
+el envío de las palabras validas del caracter 'NULL' que indica que no se enviarán mas palabras.
