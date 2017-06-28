@@ -27,6 +27,7 @@ static unsigned int np;
 // Crea un ConcurrentHashMap distribuido
 static void load(list<string> params) {
     MPI_Request req;
+    MPI_Status status;
 
     for (list<string>::iterator it=params.begin(); it != params.end(); ++it) {
         string filename = *it;
@@ -41,7 +42,6 @@ static void load(list<string> params) {
         }
 
         // Esperar a que uno me indique que lo lee
-        MPI_Status status;
         MPI_Recv(NULL, 0, MPI_CHAR, MPI_ANY_SOURCE, LOAD_ACCEPT_TAG, MPI_COMM_WORLD, &status);
         unsigned int reader = status.MPI_SOURCE;
 
@@ -57,6 +57,9 @@ static void load(list<string> params) {
 
         free(filenamePointer);
     }
+
+    for (unsigned int i = 0; i < params.size(); i++)
+        MPI_Recv(NULL, 0, MPI_CHAR, MPI_ANY_SOURCE, LOAD_COMPLETE_TAG, MPI_COMM_WORLD, &status);
 
 
     cout << "La listá esta procesada" << endl;
